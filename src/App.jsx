@@ -23,12 +23,15 @@ function App() {
   useEffect(() => {
     if (!isScanning || !selectedType) return;
 
+    let mounted = true;
+    let stream = null;
+
     const startScanning = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode }
         });
-        if (videoRef.current) {
+        if (videoRef.current && mounted) {
           videoRef.current.srcObject = stream;
           videoRef.current.play();
 
@@ -36,8 +39,11 @@ function App() {
             null,
             videoRef.current,
             (result, err) => {
-              if (result) setResult(result.getText());
-              if (err && err.name !== 'NotFoundException') {
+              if (result && mounted) {
+                setResult(result.getText());
+                stopScanning();
+              }
+              if (err && err.name !== 'NotFoundException' && mounted) {
                 console.error(err);
                 setResult('Error scanning barcode');
               }
@@ -45,21 +51,35 @@ function App() {
           );
         }
       } catch (err) {
-        console.error(err);
-        setResult('Error accessing camera');
+        if (mounted) {
+          console.error(err);
+          setResult('Error accessing camera');
+        }
       }
     };
 
     startScanning();
 
     return () => {
-      codeReader.current.reset();
-      if (videoRef.current?.srcObject) {
-        const tracks = videoRef.current.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-      }
+      mounted = false;
+      stopScanning();
     };
   }, [isScanning, facingMode, selectedType]);
+
+  const stopScanning = () => {
+    if (codeReader.current) {
+      codeReader.current.reset();
+    }
+    if (videoRef.current && videoRef.current.srcObject) {
+      const tracks = videoRef.current.srcObject.getTracks();
+      tracks.forEach(track => {
+        track.stop();
+        track.enabled = false;
+      });
+      videoRef.current.srcObject = null;
+    }
+    setIsScanning(false);
+  };
 
   const handleTypeSelect = (type) => {
     setSelectedType(type);
@@ -90,71 +110,73 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Barcode Scanner</h1>
+      <div className="content">
+        <h1>Barcode Scanner</h1>
 
-      {!selectedType ? (
-        <section className="type-selection">
-          <h2>Select Barcode Type</h2>
-          <div className="type-buttons">
-            {barcodeTypes.map(type => (
-              <button
-                key={type}
-                className={selectedType === type ? 'selected' : ''}
-                onClick={() => handleTypeSelect(type)}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-        </section>
-      ) : (
-        <>
-          <section className="selected-type">
-            <h2>Scanning: {selectedType}</h2>
-            <button onClick={() => setSelectedType(null)} className="back-button">
-              Change Type
-            </button>
-          </section>
-
-          <section className="input-methods">
-            <h3>Choose Input Method</h3>
-            <div className="method-buttons">
-              <button onClick={startCameraScan} disabled={isScanning}>
-                Use Camera
-              </button>
-              <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                onChange={handleFileUpload}
-                style={{ display: 'none' }}
-              />
-              <button onClick={() => fileInputRef.current.click()}>
-                Upload Image
-              </button>
+        {!selectedType ? (
+          <section className="type-selection">
+            <h2>Select Barcode Type</h2>
+            <div className="type-buttons">
+              {barcodeTypes.map(type => (
+                <button
+                  key={type}
+                  className={selectedType === type ? 'selected' : ''}
+                  onClick={() => handleTypeSelect(type)}
+                >
+                  {type}
+                </button>
+              ))}
             </div>
           </section>
+        ) : (
+          <>
+            <section className="selected-type">
+              <h2>Scanning: {selectedType}</h2>
+              <button onClick={() => setSelectedType(null)} className="back-button">
+                Change Type
+              </button>
+            </section>
 
-          {isScanning && (
-            <section className="scanner-container">
-              <video ref={videoRef} width="300" height="300" muted playsInline />
-              <div className="scanner-controls">
-                <button onClick={toggleCamera}>
-                  Switch to {facingMode === 'environment' ? 'Front' : 'Back'} Camera
+            <section className="input-methods">
+              <h3>Choose Input Method</h3>
+              <div className="method-buttons">
+                <button onClick={startCameraScan} disabled={isScanning}>
+                  Use Camera
                 </button>
-                <button onClick={() => setIsScanning(false)} className="stop-button">
-                  Stop Scanning
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
+                />
+                <button onClick={() => fileInputRef.current.click()}>
+                  Upload Image
                 </button>
               </div>
             </section>
-          )}
 
-          <section className="result">
-            <h3>Result:</h3>
-            <p>{result}</p>
-          </section>
-        </>
-      )}
+            {isScanning && (
+              <section className="scanner-container">
+                <video ref={videoRef} muted playsInline />
+                <div className="scanner-controls">
+                  <button onClick={toggleCamera}>
+                    Switch to {facingMode === 'environment' ? 'Front' : 'Back'} Camera
+                  </button>
+                  <button onClick={stopScanning} className="stop-button">
+                    Stop Scanning
+                  </button>
+                </div>
+              </section>
+            )}
+
+            <section className="result">
+              <h3>Result:</h3>
+              <p>{result}</p>
+            </section>
+          </>
+        )}
+      </div>
     </div>
   );
 }
