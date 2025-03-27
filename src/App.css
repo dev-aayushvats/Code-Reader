@@ -1,0 +1,108 @@
+* {
+  font-family: 'Space Mono', monospace;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f0f2f5;
+  color: #1a1a1a;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #34495e;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #34495e;
+}
+
+section {
+  width: 100%;
+  max-width: 500px;
+  margin: 15px 0;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.type-buttons,
+.method-buttons,
+.scanner-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+button.selected {
+  background-color: #2ecc71;
+}
+
+button.selected:hover {
+  background-color: #27ae60;
+}
+
+.back-button,
+.stop-button {
+  background-color: #e74c3c;
+}
+
+.back-button:hover,
+.stop-button:hover {
+  background-color: #c0392b;
+}
+
+button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.scanner-container video {
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+.result {
+  background-color: #ecf0f1;
+}
+
+.result p {
+  margin: 10px 0;
+  word-break: break-all;
+  color: #2c3e50;
+}
