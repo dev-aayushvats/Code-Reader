@@ -24,13 +24,13 @@ function App() {
     if (!isScanning || !selectedType) return;
 
     let mounted = true;
-    let stream = null;
 
     const startScanning = async () => {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode }
-        });
+        const constraints = {
+          video: { facingMode: { ideal: facingMode } }
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
         if (videoRef.current && mounted) {
           videoRef.current.srcObject = stream;
           videoRef.current.play();
@@ -44,7 +44,7 @@ function App() {
                 stopScanning();
               }
               if (err && err.name !== 'NotFoundException' && mounted) {
-                console.error(err);
+                console.error('Scanning error:', err);
                 setResult('Error scanning barcode');
               }
             }
@@ -52,8 +52,8 @@ function App() {
         }
       } catch (err) {
         if (mounted) {
-          console.error(err);
-          setResult('Error accessing camera');
+          console.error('Camera access error:', err);
+          setResult(`Error accessing camera: ${err.message}`);
         }
       }
     };
@@ -104,7 +104,7 @@ function App() {
     img.src = URL.createObjectURL(file);
   };
 
-  const startCameraScan = () => {
+  const startCameraScan = async () => {
     setIsScanning(true);
   };
 
@@ -158,7 +158,7 @@ function App() {
 
             {isScanning && (
               <section className="scanner-container">
-                <video ref={videoRef} muted playsInline />
+                <video ref={videoRef} autoPlay muted playsInline />
                 <div className="scanner-controls">
                   <button onClick={toggleCamera}>
                     Switch to {facingMode === 'environment' ? 'Front' : 'Back'} Camera
