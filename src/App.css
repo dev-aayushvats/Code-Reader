@@ -18,8 +18,8 @@ html, body {
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: #f0f2f5;
-  color: #1a1a1a;
+  background-color: #1E1E1E; /* Matte dark gray background */
+  color: #D3D3D3; /* Light gray for base text */
   overflow-y: auto;
 }
 
@@ -36,21 +36,21 @@ html, body {
 h1 {
   font-size: 2rem;
   margin-bottom: 30px;
-  color: #2c3e50;
+  color: #D8BFD8; /* Pastel purple for title */
   text-align: center;
 }
 
 h2 {
   font-size: 1.5rem;
   margin-bottom: 15px;
-  color: #34495e;
+  color: #AEC6CF; /* Pastel blue for section titles */
   text-align: center;
 }
 
 h3 {
   font-size: 1.2rem;
   margin-bottom: 10px;
-  color: #34495e;
+  color: #AEC6CF; /* Pastel blue for subtitles */
   text-align: center;
 }
 
@@ -58,15 +58,29 @@ section {
   width: 100%;
   margin: 15px 0;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: #2A2A2A; /* Slightly lighter matte gray for sections */
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for matte effect */
 }
 
-.type-buttons,
+.supported-types ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+  max-width: 400px;
+}
+
+.supported-types li {
+  margin: 10px 0;
+  font-size: 1rem;
+  color: #D3D3D3; /* Light gray for list text */
+}
+
+.supported-types strong {
+  color: #FFB6C1; /* Pastel pink for bold text */
+}
+
 .method-buttons,
 .scanner-controls {
   display: flex;
@@ -77,8 +91,8 @@ section {
 
 button {
   padding: 10px 20px;
-  background-color: #3498db;
-  color: #ffffff;
+  background-color: #AEC6CF; /* Pastel blue for buttons */
+  color: #1E1E1E; /* Dark gray text for contrast */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -88,29 +102,19 @@ button {
 }
 
 button:hover {
-  background-color: #2980b9;
+  background-color: #87A8B3; /* Slightly darker pastel blue on hover */
 }
 
-button.selected {
-  background-color: #2ecc71;
-}
-
-button.selected:hover {
-  background-color: #27ae60;
-}
-
-.back-button,
 .stop-button {
-  background-color: #e74c3c;
+  background-color: #FFB6C1; /* Pastel pink for stop button */
 }
 
-.back-button:hover,
 .stop-button:hover {
-  background-color: #c0392b;
+  background-color: #EFA3B0; /* Slightly darker pastel pink on hover */
 }
 
 button:disabled {
-  background-color: #bdc3c7;
+  background-color: #666666; /* Dark gray for disabled state */
   cursor: not-allowed;
 }
 
@@ -123,12 +127,12 @@ button:disabled {
 }
 
 .result {
-  background-color: #ecf0f1;
+  background-color: #333333; /* Darker matte gray for result section */
 }
 
 .result p {
   margin: 10px 0;
   word-break: break-all;
-  color: #2c3e50;
+  color: #D3D3D3; /* Light gray for result text */
   text-align: center;
 }
